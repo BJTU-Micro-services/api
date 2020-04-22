@@ -32,6 +32,46 @@ describe('api test', () => {
     done()
   })
 
+  test('/user/create', async (done) => {
+    const response = await fastify.inject({
+      method: 'POST',
+      url: '/user/create',
+    })
+    expect(response.statusCode).toBe(200)
+    const userToken = JSON.parse(response.body).user_token
+    expect(userToken).toBe('user_token_1')
+    done()
+  })
+
+  test('/user/:userToken', async (done) => {
+    const response = await fastify.inject({
+      method: 'DELETE',
+      url: '/user/:userToken',
+    })
+    expect(response.statusCode).toBe(200)
+    done()
+  })
+
+  test('/ticket/list', async (done) => {
+    const response = await fastify.inject({
+      method: 'GET',
+      url: '/ticket/list',
+    })
+    expect(response.statusCode).toBe(200)
+    const ticketIds = JSON.parse(response.body).tickets_ids
+    expect(ticketIds).toStrictEqual(['ticket_id_1', 'ticket_id_2', 'ticket_id_3'])
+    done()
+  })
+
+  test('/order/:ticketId', async (done) => {
+    const response = await fastify.inject({
+      method: 'POST',
+      url: '/order/:ticketId',
+    })
+    expect(response.statusCode).toBe(200)
+    done()
+  })
+
   test('/pay success', async (done) => {
     const body = {
       tickets_ids: ['ticket_id_1'],

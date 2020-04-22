@@ -21,13 +21,8 @@ export function buildFastify(): FastifyInstance {
     // }
   });
 
-  const createUserSchema = FluentSchema.object();
   // User creation route
-  server.post('/user/create', {
-    schema: {
-      body: createUserSchema,
-    },
-  }, async (request, reply) => {
+  server.post('/user/create', async (request, reply) => {
     const response = {
       user_token: "user_token_1"
     }
@@ -40,7 +35,10 @@ export function buildFastify(): FastifyInstance {
 
   server.get('/ticket/list', (request, reply) => {
     const tickets = ['ticket_id_1', 'ticket_id_2', 'ticket_id_3']
-    reply.code(200).send(tickets);
+    const response = {
+      tickets_ids: tickets
+    }
+    reply.code(200).send(response);
   });
 
   server.post('/order/:ticketId', async (request, reply) => {
