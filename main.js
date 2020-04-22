@@ -1,23 +1,12 @@
-const express = require("express");
-const app = express();
-const port = 3000;
+"use strict";
 
-const request = require("request");
-
-app.get("/", (req, res) => res.send("Hello World from API!"));
-
-app.listen(port, "0.0.0.0", () =>
-  console.log(`App listening at http://localhost:${port}`)
-);
-
-setInterval(() => {
-  request("http://payment:8080", { json: true }, (err, res, body) => {
-    console.log(err ? err : body);
+const kafka = require("kafka-node"),
+  HighLevelProducer = kafka.HighLevelProducer,
+  client = new kafka.KafkaClient(),
+  producer = new HighLevelProducer(client),
+  payloads = [{ topic: "test_topic", messages: "hi" }];
+producer.on("ready", () => {
+  producer.send(payloads, (err, data) => {
+    console.log(data);
   });
-  request("http://ticket:8081", { json: true }, (err, res, body) => {
-    console.log(err ? err : body);
-  });
-  request("http://user:8082", { json: true }, (err, res, body) => {
-    console.log(err ? err : body);
-  });
-}, 2000);
+});
