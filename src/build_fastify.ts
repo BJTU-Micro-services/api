@@ -1,8 +1,7 @@
 import fastify, {FastifyInstance} from 'fastify'
 import FluentSchema from 'fluent-schema'
 import Redis from 'redis'
-import {EXPONENT_PUSH_TOKEN, LATITUDE, LONGITUDE, MESSAGE} from './constants'
-import util from 'util'
+// import util from 'util'
 // import fs from 'fs'
 // import path from 'path'
 
@@ -11,7 +10,7 @@ export function buildFastify(): FastifyInstance {
   redisClient.on("error", function(error) {
     console.error(error);
   });
-  const send_command: (command: string, args?: any[]) => Promise<any> = util.promisify(redisClient.send_command).bind(redisClient);
+  //const send_command: (command: string, args?: any[]) => Promise<any> = util.promisify(redisClient.send_command).bind(redisClient);
 
   // Require the server framework and instantiate it
   const server = fastify({
@@ -22,41 +21,45 @@ export function buildFastify(): FastifyInstance {
     // }
   });
 
-  const helpersRouteBodySchema = FluentSchema.object()
-    .prop(EXPONENT_PUSH_TOKEN, FluentSchema.string()).required()
-    .prop(LATITUDE, FluentSchema.number()).required()
-    .prop(LONGITUDE, FluentSchema.number()).required();
-  // Helpers route
-  server.post('/helpers', {
+  const createUserSchema = FluentSchema.object();
+  // User creation route
+  server.post('/user/create', {
     schema: {
-      body: helpersRouteBodySchema,
+      body: createUserSchema,
     },
   }, async (request, reply) => {
+    const response = {
+      user_token: "user_token_1"
+    }
+    reply.code(200).send(response);
+  });
+  // This route deletes the user
+  server.delete('/user/:userToken', async (request, reply) => {
     reply.code(200).send();
   });
 
-  const deleteHelpersRouteBodySchema = FluentSchema.object()
-    .prop(EXPONENT_PUSH_TOKEN, FluentSchema.string()).required();
-  // This route deletes the helper prematurely from the database
-  server.delete('/helpers', {
-    schema: {
-      body: deleteHelpersRouteBodySchema,
-    },
-  }, async (request, reply) => {
-    reply.code(200).send();
+  server.get('/ticket/list', (request, reply) => {
+    const tickets = ['ticket_id_1', 'ticket_id_2', 'ticket_id_3']
+    reply.code(200).send(tickets);
   });
 
-  const helpeeRouteBodySchema = FluentSchema.object()
-    .prop(LATITUDE, FluentSchema.number()).required()
-    .prop(LONGITUDE, FluentSchema.number()).required()
-    .prop(MESSAGE, FluentSchema.string()).required();
-  // Helpee route
-  server.post('/helpee', {
+  server.post('/order/:ticketId', async (request, reply) => {
+    console.log(request)
+    reply.code(200).send();
+  })
+
+  const paySchema = FluentSchema.object()
+    .prop("tickets_ids", FluentSchema.array().items(FluentSchema.string())).required()
+    .prop("payment_id", FluentSchema.string()).required();
+  // Payment route route
+  server.post('/pay', {
     schema: {
-      body: helpeeRouteBodySchema,
+      body: paySchema,
     },
   }, async (request, reply) => {
-    reply.code(200).send({});
+    const paymentId = request.body['payment_id'];
+    const code = paymentId == 'i_totally_paid_for_those' ? 200 : 400
+    reply.code(code).send();
   });
 
   server.addHook('onClose', async (instance, done) => {
