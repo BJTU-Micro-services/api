@@ -10,3 +10,14 @@ producer.on("ready", () => {
     console.log(data);
   });
 });
+
+
+const redis = require("redis");
+const redisClient = redis.createClient();
+
+redisClient.on("error", function(error) {
+  console.error(error);
+});
+
+redisClient.set("key", "value", redis.print);
+redisClient.get("key", redis.print);
