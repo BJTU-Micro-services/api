@@ -2,17 +2,41 @@
   "name": "api",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "main": "index.ts",
   "scripts": {
-    "start": "node main.js"
+    "start": "ts-node index.ts",
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "fastify": "^2.13.1",
+    "fluent-schema": "^0.10.0",
     "kafka-node": "^5.0.0",
-    "redis": "^3.0.2"
+    "redis": "^3.0.2",
+    "ts-node": "^8.9.0",
+    "typescript": "^3.8.3"
   },
   "devDependencies": {
-    "@types/redis": "^2.8.18"
+    "@types/jest": "^25.2.1",
+    "@types/redis": "^2.8.18",
+    "jest": "^25.4.0",
+    "ts-jest": "^25.4.0"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "roots": [
+      "<rootDir>/src/"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsConfig": "tsconfig.json"
+      }
+    },
+    "testEnvironment": "node"
   }
 }

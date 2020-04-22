@@ -12,8 +12,6 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 # Create app directory
 WORKDIR /app
 
-ENV NODE_ENV production
-
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
