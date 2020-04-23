@@ -33,13 +33,15 @@ describe('api test', () => {
   })
 
   test('/user/create', async (done) => {
+    const body = {
+      username: 'test_username'
+    }
     const response = await fastify.inject({
       method: 'POST',
       url: '/user/create',
+      payload: body
     })
     expect(response.statusCode).toBe(200)
-    const userToken = JSON.parse(response.body).user_token
-    expect(userToken).toBe('user_token_1')
     done()
   })
 
