@@ -34,7 +34,7 @@ export function buildFastify(): FastifyInstance {
     },
   }, async (request, reply) => {
     const username = request.body.username;
-    const payloads = [{ topic: "create_user", messages: { username: username } }]
+    const payloads = [{ topic: "create_user", messages: JSON.stringify({ username: username }) }]
     producer.send(payloads, (err, data) => {
       if (err) {
         console.error(err);
